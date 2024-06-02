@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Page Title</title>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DX69NVJNBX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-DX69NVJNBX');
+  </script>
+  
+  <link rel="stylesheet" href="eyegestures.css">
+  <style>
+
+    body{
+      background-color: #a1b6cc;
+      margin: 0;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      font-family: monospace;
+    }
+
+    .container
+    {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card_container
+    {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; 
+      margin-left: 5%;
+      margin-right: 5%;
+    }
+
+    .card {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      width: 25vw;
+      height: 60vh;
+      margin: 5%;
+      background-color: #cb9cc533;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Add box   shadow for the light effect */
+
+      transition: 0.3s ease;
+    }
+
+    .strip
+    {
+      display: flex;
+    }
+
+    .strip-center {
+      width: 10px;
+      height: 12px;
+      margin-left: -5px;
+      margin-right: -5px;
+      background-color: #f0f0f0;           
+      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Add box shadow for the light effect */
+      transition: 0.3s ease;
+    }
+
+    .strip-left {
+      width: 10px;
+      height: 12px;
+      background: #f0f0f0;
+      border-radius: 50%;
+      border: 0px solid transparent; /* Set a transparent border initially */
+      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.0); /* Add box   shadow for the light effect */
+      transition: 0.3s ease;
+    }
+
+    .strip-right {
+      width: 10px;
+      height: 12px;
+      background: #f0f0f0;
+      border-radius: 50%;
+      border: 0px solid transparent; /* Set a transparent border initially */
+      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.0); /* Add box   shadow for the light effect */
+
+      transition: 0.3s ease;
+    }
+
+    /* .card:hover {
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);
+    transition: 0.3s ease;
+    }
+     */
+
+    .modal {
+      display: none; /* Hide modal by default */
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+    }
+
+    /* CSS for the modal content */
+    .modal-content {
+      position: relative;
+      margin: 10% auto;
+      padding: 20px;
+      width: 90vw;
+      max-width: 90vw;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+  </style>
+</head>
+<body>
+
+<div id="grid_container"></div>
+
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  <div style="background-color: #dedcff; border-radius: 50px; width: 80%; height: 40px; margin: 50px; text-align: center; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);">
+    <div style="font-size: 30px;">Fixate on the card and blink when it gets green!</div>
+  </div>
+  <!-- Content for Section 2 -->
+  <div class="container" style="width: 100%; height: 100%;">
+      <div class="card_container" id="meal_1">
+          <div class="strip">
+          <div class="strip-left" id="card1"></div>
+          <div class="strip-center" id="card1"></div>
+          <div class="strip-right" id="card1"></div>
+          </div>
+          <div class="card" id="card1">
+            <p style="font-size: 200%;">Chicken Thig Plate</p>
+            <img src="/static/demo_pic/restaurant_demo/turquazkebabhouse_chickenthighplate.jpg" alt="chickenthighplate" width="90%" height="300%" style="border-radius: 10px; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);">
+            <div style="background-color: #dedcff; border-radius: 50px; width: 50%; height: 40%; margin: 10%; text-align: center; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);">
+              <div style="font-size: 250%;">10$</div>
+            </div>
+            </div>
+      </div>
+      
+      <div class="card_container" id="meal_2">
+          <div class="strip">
+          <div class="strip-left" id="card2"></div>
+          <div class="strip-center" id="card2"></div>
+          <div class="strip-right" id="card2"></div>
+          </div>
+          <div class="card" id="card2">
+            <p style="font-size: 200%;">Chicken Wing Plate</p>
+            <img src="/static/demo_pic/restaurant_demo/turquazkebabhouse_chickenwingplate.jpg" alt="chickenwingplate" width="90%" height="300%" style="border-radius: 10px; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);">
+            <div style="background-color: #dedcff; border-radius: 50px; width: 50%; height: 40%; margin: 10%; text-align: center; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);">
+              <div style="font-size: 250%;">10$</div>
+            </div>
+          </div>
+      </div>
+      
+      
+      <div class="card_container" id="meal_3">
+          <div class="strip">
+          <div class="strip-left" id="card3"></div>
+          <div class="strip-center" id="card3"></div>
+          <div class="strip-right" id="card3"></div>
+          </div>
+          <div class="card" id="card3">
+            <p style="font-size: 200%;">Lambrack Chop Plate</p>
+            <img src="/static/demo_pic/restaurant_demo/turquazkebabhouse_lambrackchopplate.jpg" alt="lambrackchopplate" width="90%" height="300%" style="border-radius: 10px; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);">
+            <div style="background-color: #dedcff; border-radius: 50px; width: 50%; height: 40%; margin: 10%; text-align: center; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);">
+              <div style="font-size: 250%;">10$</div>
+            </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div id="myModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="container">
+      <div class="card_container">
+          <div class="strip">
+          <div class="strip-left" id="card4"></div>
+          <div class="strip-center" id="card4"></div>
+          <div class="strip-right" id="card4"></div>
+          </div>
+          <div class="card" id="card4" style="background-color: #56f164; font-size: 55px;">Pay</div>
+      </div>
+
+      <div class="card_container">
+      </div>
+      <div class="card_container">
+      </div>
+      
+      <div class="card_container">
+          <div class="strip">
+          <div class="strip-left" id="card5"></div>
+          <div class="strip-center" id="card5"></div>
+          <div class="strip-right" id="card5"></div>
+          </div>
+          <div class="card" id="card5" style="background-color: #fc3a4f; font-size: 55px;">Cancel</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+var card_activated = false;
+var mode = "normal"; // second mode is payment
+var modal = document.getElementById("myModal");
+var debouncer_start = Date.now();
+var debouncer_limit = 500;
+function press(card,activated,blink){
+  if(activated && blink && (debouncer_limit < Date.now() - debouncer_start)){
+    card_activated = false;
+    // Specify the URL and other properties of the pop-up window
+    if(mode == "normal")
+    {
+      // Open the pop-up window
+      modal.style.display = "block";
+      mode = "payment";
+    }
+    else{
+      // Open the pop-up window
+      modal.style.display = "none";
+      mode = "normal";
+    }
+    debouncer_start = Date.now();
+  }
+}
+
+function activate(card,fix){
+  const stripCenter = document.querySelector('.strip-center#'+card.id);
+  const stripLeft = document.querySelector('.strip-left#'+card.id);
+  const stripRight = document.querySelector('.strip-right#'+card.id);
+    
+  if(card_activated || fix >= 0.7){
+    stripCenter.style.background = "#56f164";
+    stripLeft.style.background = "#56f164";
+    stripRight.style.background = "#56f164";
+    // add popup menu
+    card_activated = true;
+    return true;
+  }
+  else{
+    stripCenter.style.background = "#f0f0f0";
+    stripLeft.style.background = "#f0f0f0";
+    stripRight.style.background = "#f0f0f0";
+    return false
+  }
+}
+
+var calibrated = false;
+function onCalibration(){
+  calibrated = true;
+}
+
+const cards = {"tile_1":"card1","tile_2":"card2","tile_3":"card3"}
+const cards2 = {"tile_1":"card4","tile_2":null,"tile_3":"card5"};
+var gazed_card;
+function onTile(id, fix, blink){
+  if(!calibrated) return;
+
+  var card_id;
+  if(mode == "normal"){
+    card_id = cards[id];
+  }
+  else{
+    card_id = cards2[id];
+  }
+
+  if(card_id != null)
+  {
+    gazed_card = document.getElementById(card_id);
+    console.log("activate(gazed_card,fix): ", activate(gazed_card,fix));
+    press(
+      gazed_card,
+      activate(gazed_card,fix),
+      blink
+    );
+  }
+  // Get references to the elements
+};
+
+
+function updateCards(){
+  var meals_cards;
+  meals_cards = document.querySelectorAll('.card');
+  meals_cards.forEach((card) =>
+  {
+    const stripCenter = document.querySelector('.strip-center#'+card.id);
+    const stripLeft = document.querySelector('.strip-left#'+card.id);
+    const stripRight = document.querySelector('.strip-right#'+card.id);
+    const refCard = document.querySelector('.card#'+card.id);
+      
+    console.log(gazed_card.id == card.id,gazed_card.id,card.id)
+    if(gazed_card.id == card.id)
+    {
+      // Change the background color of strip-center on hover
+      stripCenter.style.boxShadow = '5px 5px 15px rgba(0, 0, 0, 0.6)';
+      stripLeft.style.boxShadow = '5px 5px 15px rgba(0, 0, 0, 0.6)';
+      stripRight.style.boxShadow = '5px 5px 15px rgba(0, 0, 0, 0.6)';
+      refCard.style.boxShadow = '5px 5px 15px rgba(0, 0, 0, 0.6)';
+
+      stripCenter.style.width = '100px';
+    }
+    else{
+      // Reset the background color of strip-center
+      stripCenter.style.width = '10px';
+      stripCenter.style.boxShadow = '5px 5px 15px rgba(0, 0,  0, 0.3)';
+      refCard.style.boxShadow = '5px 5px 15px rgba(0, 0, 0, 0.3)'; /* Add box   shadow for the light effect */
+          
+      stripCenter.style.background = "#f0f0f0";
+      stripLeft.style.background = "#f0f0f0";
+      stripRight.style.background = "#f0f0f0";
+
+      card_activated = false;
+    }
+  });
+}
+
+setInterval(updateCards,500);
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+<script src="/eyeTiles.js"></script>
+<script>
+EyeTilesAPI(
+  API_KEY = "JtLM!H!LqvRR@%Jx@jPGqCP3e2#S4Vqg!Czq2R97SSYp*yxPn&r&&@aFGpZB", // not in use for now
+  cols_list = [1,1,1],
+  {
+    fix_point : 0.1,
+    freeze_radius : 500,
+    sightGrid : true,
+    onTile : onTile,
+    onCalibration : onCalibration,
+  }
+);
+</script>
+</body>
+</html>

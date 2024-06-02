@@ -1,0 +1,237 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #141415;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  color: #e8e8e9;
+  display: flex;
+  flex-direction: column; /* Align items vertically */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  
+}
+
+.maincontent {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+h1 {
+  font-size: 250%;
+  width: 100%; /* Full width */
+  text-align: center; /* Center the text */
+  margin-bottom: 3%; /* Space between the title and the rest of the content */
+}
+
+h2 {
+  margin: 0px;
+  padding: 0px;
+  font-size: 100%;
+  margin-bottom: 0;
+  text-shadow: 0 0 25px rgba(255, 165, 0, 0.3);
+  display: inline-block;
+}
+
+h3 {
+  margin: 4px;
+  padding: 4px;
+  margin-bottom: 0;
+  text-shadow: 0 0 25px rgba(255, 165, 0, 0.3);
+  display: inline-block;
+}
+
+.box {
+  background-color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  padding: 20px; /* Added padding for content */
+}
+
+.row {
+  /* height: 100%; Added padding for content */
+  width: 100%;
+  margin: 1%;
+  padding: 1%;
+  display: flex;
+  align-items: center;
+}
+
+
+.box:hover, .is-hovered {
+  background-color: #555; /* A lighter shade for the highlight */
+  cursor: pointer; /* Changes the cursor to indicate the element is interactive */
+  transform: scale(1.05); /* Slightly increase the size of the box */
+  z-index: 1; /* Ensure the scaled element is above the others */
+  box-shadow: 0 0 10px 5px rgba(120, 120, 120, 0.1); /* White glow effect */
+}
+
+.box.large { grid-column: span 2; }
+
+/* You can assign different classes or ids for different colors or sizes */
+.box.large { grid-column: span 2; }
+.box.medium { grid-column: span 1; }
+.box.small { grid-column: span 1; }
+
+
+.sidebar {
+  width: 20%;
+  margin: 2%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 2%; /* Separation between sidebar and boxes */
+  padding-top: 2%; /* Padding on the top */
+}
+
+.midbar {
+  width: 50%;
+  margin: 2%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 2%; /* Separation between sidebar and boxes */
+  padding-top: 2%; /* Padding on the top */
+}
+
+.container {
+  width: 100%;
+  margin: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(1, 1fr); /* Increased the number of rows to 5 */
+  gap: 10px;
+}
+
+.text-field {
+  margin-bottom: 10px; /* Separation between text field and button */
+  padding: 10px;
+  border-radius: 20px;
+  border: 2px solid #e8e8e9;
+  background-color: #333;
+  color: white;
+  outline: none;
+}
+
+.pill-button-disable {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px; /* Pill shape */
+  background-color: #45464350;
+  color: #FFFFFF50;
+  cursor: pointer;
+  outline: none;
+  margin-bottom: 20px; /* Separation between button and the rest of the content */
+}
+
+
+.pill-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px; /* Pill shape */
+  background-color: #7d7d78;
+  color: white;
+  cursor: pointer;
+  outline: none;
+  margin-bottom: 20px; /* Separation between button and the rest of the content */
+}
+
+.pill-button:hover, .is-hovered {
+  background-color: #454643;
+  transform: scale(1.05);
+}
+
+
+/* Weak connection */
+
+#weak_connection {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  width: 200px;
+  height: 100px;
+  font-weight: bold;
+  font-size: 20px;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Higher z-index than your content */
+  border-radius: 5px;
+  background-color: rgba(190, 0, 0, 0.342); /* Semi-transparent background */
+  text-align: center;
+  display: flex;
+  transform: translate(-50%,-50%);
+}
+
+.hide{
+  opacity: 0;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #14151455;
+  color: white;
+  text-align: center;
+}
+
+#localVideo {
+  transform: scaleX(-1);
+}
+
+/*styles for buttons*/
+label {
+  pointer-events: none;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.toggle-wrapper {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  background-color: #423d3d;
+  border-radius: 999px;
+  margin: auto;
+  cursor: pointer;
+  pointer-events: all;
+  box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.3s ease;
+  transform: translate(0%,-25%);
+}
+
+.selector {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translate(0%,-50%);
+  background-color: #ee5f39;
+  transition: all 0.25s ease, background-color 0.3s ease; /* Added transition for background color */
+  border-radius: 50%;
+}
+
+.input{
+  opacity: 0;
+}
+.input:checked + .toggle-wrapper > .selector {
+  background-color: #3957ee; /* Change color to blue when checked */
+}
+
+.notification {
+  font-size: 20px;
+  width: 100%;
+  opacity: 1;
+  transition: opacity 0.5s;
+}

@@ -1,0 +1,184 @@
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>EyeGestures</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body{
+    background-image: url("background_magnet_demo.png");
+    background-size: cover; /* or contain or specific dimensions */
+  
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body::before{
+    content: "";
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: #0c0c0c8c; 
+    z-index: -1; /* Place the overlay behind other content */
+  }
+
+  .button{
+    width: 120px; 
+    height: 120px; 
+    border-radius: 50%;
+    margin: 30;
+  }
+
+  .yellow {
+    --tw-bg-opacity: 1;
+    background-color: rgba(255,176,0,0.5);
+  }
+
+  .red {
+    --tw-bg-opacity: 1;
+    background-color: rgba(248,0,0,0.5);
+  }
+
+  .green {
+    --tw-bg-opacity: 1;
+    background-color: rgba(74,191,52,0.5);
+  }
+
+
+  .container{
+    height: 85%;
+    width: 50%;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #a5a5a511; 
+    margin: 2;
+    margin-left: 25%;
+    backdrop-filter: blur(5px); 
+  }
+
+  .row{
+    width: 100%;
+    align-items:center; 
+    justify-content: center; 
+    display: flex; 
+    margin-bottom: 4;
+  }
+</style>
+</head>
+<body>
+
+<div class="row">  
+  <h1>
+    EyeGestures
+  </h1>
+</div>
+  
+<div class="container">
+  
+  <div class="row" >
+    <div class="yellow button">
+      Instagram
+    </div>
+    <div class="yellow button">
+      Instagram
+    </div>
+    <div class="yellow button">
+      Instagram
+    </div>
+    <div class="yellow button">
+      Instagram
+    </div>
+  </div>
+
+  <div class="row" >
+    <div class="red button">
+      Pinterest
+    </div>
+    <div class="red button">
+      Pinterest
+    </div>
+    <div class="red button">
+      Pinterest
+    </div>
+    <div class="red button">
+      Pinterest
+    </div>
+    <div class="red button">
+      Pinterest
+    </div>
+  </div>
+
+  <div class="row" >
+    <div class="green button">
+      Spotify
+    </div>
+    <div class="green button">
+      Spotify
+    </div>
+    <div class="green button">
+      Spotify
+    </div>
+    <div class="green button">
+      Spotify
+    </div>
+  </div>
+
+</div>
+<div class="row" >
+  <div class="footer">
+    <p>Disclaimer: This software is not collecting any biometric data nor data allowing to recognize/identify user. If you want to know more feel free to <a href="https://github.com/PeterWaIIace" target="_blank" style="color: yellow;">contact</a>.</p>
+  </div> 
+</div>
+
+<script>
+  // Define your color palette
+  const colors = ['#45464344', '#14151455','#7d7d7833', '#e8e8e944'];
+
+  // Function to assign a random color from the palette
+  function assignRandomColors() {
+    const boxes = document.querySelectorAll('.box'); // Select all boxes
+    boxes.forEach(box => {
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      box.style.backgroundColor = randomColor; // Assign random color
+    });
+  }
+  // Call the function on page load
+  window.onload = assignRandomColors;
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+
+<script src="/eyeMagnet.js"></script>
+<script>
+
+  function onCursor(x,y,fix,blink){
+
+  };
+
+  function onMagnet(element){
+
+  };
+
+  function onMagnetCalibration(completed){
+
+  };
+
+
+  EyeMagnetAPI(
+    "JtLM!H!LqvRR@%Jx@jPGqCP3e2#S4Vqg!Czq2R97SSYp*yxPn&r&&@aFGpZB",1.0,1,
+    {
+      onCursor : onCursor,
+      onMagnet : onMagnet,
+      onMagnetCalibration : onMagnetCalibration,
+      calibration : true,
+      calibration_layout : true  
+    }
+  );
+</script>
+</body>
+</html>

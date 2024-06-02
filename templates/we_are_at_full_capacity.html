@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>EyeGestures</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>
+EyeGestures
+</h1>
+
+<div>
+  <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script>
+  <script type='text/javascript'>kofiwidget2.init('Help us make it better', '#7d7d78', 'Y8Y1SGTBV');
+  kofiwidget2.draw();
+  </script>
+</div>
+
+<div class="instruct row">
+
+    <div class="midbar" style="margin: 0 auto;  width: 50%;">
+      <h2>
+        Sorry we are currently at full capacity.
+      </h2>
+      <p>
+        Online version should be available when other users will stop using it. 
+        Meanwhile you can download desktop version.
+      </p>
+    </div>
+</div>
+<div class="instruct row" style="align-items:center;display: flex; margin-bottom: 2%;">
+  <div class="midbar" style="margin: 0 auto; width: 50%;">
+      <h2>
+        V0.0.1 - December 20, 2023
+      </h2>
+      <p>
+        Web-based, basic eye tracking capabilities for webcameras,
+        gaze fixation detection, intentional blinking 
+        detection.
+      </p>
+      <div>
+        <form action="/download" method="post">
+          <input type="checkbox" name="accept_license" required style="margin-bottom: 20px;"> I accept the <a href="/license" target="_blank" style="color: yellow;">license agreement</a><br>
+          <button class="pill-button-left" type="submit" name="executable" value="linux">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Font_Awesome_5_brands_linux.svg" width="30%" height="100%"/>
+          </button>
+          <button class="pill-button-right" type="submit" name="executable" value="windows">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Windows_logo_-_2002%E2%80%932012_%28Black%29.svg" width="30%" height="100%"/>
+          </button>
+        </form>
+      </div>
+  </div>
+</div>
+
+
+<script>
+  // Define your color palette
+  const colors = ['#45464344', '#14151455','#7d7d7833', '#e8e8e944'];
+
+  // Function to assign a random color from the palette
+  function assignRandomColors() {
+    const boxes = document.querySelectorAll('.box'); // Select all boxes
+    boxes.forEach(box => {
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      box.style.backgroundColor = randomColor; // Assign random color
+    });
+  }
+  // Call the function on page load
+  window.onload = assignRandomColors;
+</script>
+</body>
+</html>

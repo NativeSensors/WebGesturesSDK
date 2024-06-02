@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Page Title</title>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DX69NVJNBX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-DX69NVJNBX');
+  </script>
+  
+  <link rel="stylesheet" href="eyegestures.css">
+  <style>
+
+  body{
+    background-color: #000000;
+    font-family: monospace;
+    margin: 0px;
+  }
+
+  .card_container
+  {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    width: 30vw;
+    /* background-color: rgba(241, 85, 85, 0.37); */
+  }
+
+  .container
+  {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .toolbar{
+    height: 80px;
+    width: 100vw;
+    position: absolute; 
+    display: flex; 
+    flex-direction: row; 
+    justify-content: center; 
+    align-items: center;
+  }
+
+  .info{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #433bffEE;
+    border-radius: 10px;
+    height: 50px; 
+    width: 400px; 
+  }
+
+  .card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 200px;
+    height: 200px;
+    margin: 60%;
+    color: #000000FF;
+    background-color: #433bffEE;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.0); /* Add box   shadow for the light effect */
+
+    transition: 0.8s ease;
+  }
+
+  </style>
+</head>
+<body>
+
+<div id="grid_container"></div>
+
+<div class="toolbar">
+  <div class="info" >  
+    <p style="height: 20px; font-size: 12px; margin: 0px;"> If you see button, just try to blink. </p>
+    <p style="height: 20px; font-size: 18px; margin: 0px;"> blink = click! </p>
+  </div>
+</div>
+
+
+<div class="container">
+  <div id="player" style="position: absolute; z-index: -999;"></div>
+  
+  <div class="card_container">
+    <div class="card" id="button_1">
+      <p style="font-size: 66px; margin: 0px;"> << </p>
+      <p style="font-size: 26px; margin: 0px;"> 5s. </p>
+    </div>
+  </div>
+
+  <div class="card_container">
+    <div class="card" id="button_2">
+      <p style="font-size: 66px; margin: 0px;"> > </p>
+      <p style="font-size: 26px; margin: 0px;"> Play/Stop. </p>
+    </div>
+  </div>
+
+
+  <div class="card_container">
+    <div class="card" id="button_3">
+      <p style="font-size: 66px; margin: 0px;"> >> </p>
+      <p style="font-size: 26px; margin: 0px;"> 5s. </p>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // adjust style - hackety hack
+  if(navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/Android/i)){
+    const cards = [...document.getElementsByClassName("card")];
+    cards.forEach(element => {
+      element.style.width  = "75px";
+      element.style.height = "75px";
+      var counter = 0;
+      for (const child of element.children) {
+        if(counter = 0)
+        {
+          child.style.fontSize = "12px";
+        }
+        else
+        {
+          child.style.fontSize = "10px";
+        }
+      }
+    });
+  }
+
+  // Get references to the elements
+  var calibrated = false; 
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  var player;
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      height: '80%',
+      width: '80%',
+      videoId: 'mOSEqSzTPQ0?si=lw-mtaEkqA-1b88x&t',
+      playerVars: {
+        'playsinline': 1
+      },
+      events: {
+      }
+    });
+  }
+
+  var blink_separation_ms = 250;
+  let prev_blink_ms = Date.now();
+
+  const cards = {"tile_1":"button_1","tile_2":"button_2","tile_3":"button_3"};
+  function onTile(id, fix, blink)
+  {
+    
+    const card_id = cards[id];
+    const card = document.getElementById(card_id);
+    if(card != null && calibrated == true)
+    {
+      // I need intermediate variable to pass that value to inner cards loop
+      // TODO: check if there is more proper way to do it
+      
+      if(fix > 0.3)
+      {
+        card.style.color = "#000000aa"; 
+        card.style.backgroundColor = "#433bff77";  
+        var seconds = player.getCurrentTime();
+        if(fix >= 0.5)
+        {
+          card.style.backgroundColor = "#433bffEE";
+        }
+    
+        if(blink)
+        {
+          console.log(id, fix, blink);
+          var diff_blink_ms = Date.now() - prev_blink_ms;
+          if(diff_blink_ms > blink_separation_ms)
+          {
+            prev_blink_ms = Date.now();
+            
+            if(card.id == "button_2")
+            {
+              const playerState = player.getPlayerState();
+              if(playerState != YT.PlayerState.PLAYING)
+              {
+                console.log("play clicked. Playing: ", playerState);
+                player.playVideo();
+              }
+              else
+              {
+                console.log("pause clicked. Playing: ", playerState);
+                player.pauseVideo();
+              }
+            }
+            else if(card.id == "button_1")
+            {
+              player.seekTo(seconds  - 5);
+            }
+            else if(card.id == "button_3")
+            {
+              player.seekTo(seconds + 5);
+            }
+          }
+    
+        }
+      }
+      else
+      {
+        card.style.color = "#00000000"; 
+        card.style.backgroundColor = "#00000000"; 
+      }
+    }
+  }
+
+  function onCalibration()
+  {
+    calibrated = true;
+  }
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+<script src="/eyeTiles.js"></script>
+<script>
+EyeTilesAPI(
+  API_KEY = "JtLM!H!LqvRR@%Jx@jPGqCP3e2#S4Vqg!Czq2R97SSYp*yxPn&r&&@aFGpZB", // not in use for now
+  cols_list = [1,1,1],
+  {
+    fix_point : 0.1,
+    freeze_radius : 500,
+    sightGrid : true,
+    onTile : onTile,
+    onCalibration : onCalibration,
+  }
+);
+</script>
+</body>
+</html>
