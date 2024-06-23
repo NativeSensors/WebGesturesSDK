@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Page Title</title>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DX69NVJNBX"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-DX69NVJNBX');
+  </script>
+ 
+  <link rel="stylesheet" href="eyegestures.css">
+  <style>
+    /* Your existing CSS styles here */    
+    body {
+      margin: 0;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      font-family: monospace;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    .container
+    {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .triangle {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      z-index: -999;
+    }
+
+    #down {
+      border-width: 0 50vw 50vh 50vw;
+      border-color: transparent transparent #78afd44b transparent;
+      bottom: 0;
+      left: 0;
+    }
+
+    #up {
+      border-width: 50vh 50vw 0 50vw;
+      border-color: #78afd44b transparent transparent transparent;
+      top: 0;
+      left: 0;
+    }
+
+    #right {
+      border-width: 50vh 50vw 50vh 0vw;
+      border-color: transparent #78afd44b transparent transparent;
+      top: 0;
+      right: 0;
+    }
+
+    #left {
+      border-width: 50vh 0 50vh 50vw;
+      border-color: transparent transparent transparent #78afd44b;
+      top: 0;
+      left: 0;
+    }
+
+  </style>
+</head>
+<body>
+
+<div id="grid_container"></div>
+
+<div style="position: absolute; width: 100%; height: 100%;">
+  <div class="triangle" id="down"></div>
+  <div class="triangle" id="up"></div>
+  <div class="triangle" id="left"></div>
+  <div class="triangle" id="right"></div>
+</div>
+
+<div class="container" style="display: flex; justify-content: center; align-items: center; width: 100vw; flex-direction: column;">
+  <h3 class="score" style="font-size: 24px; top: 40px; position: relative; color: #00000099">Points: 0</h3>
+  <canvas id="gameCanvas" width="100%" height="100%" style="position: absolute; z-index: -100;">
+  </canvas>
+</div>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+canvas.width  = window.innerWidth;
+canvas.height = window.innerHeight;
+const ctx = canvas.getContext("2d");
+
+var score = 0;
+var calibrated = false;
+const playerSize = 30;
+const enemySize = 20;
+const playerSpeed = 2;
+const bulletSpeed = 0.5;
+const enemySpeed = 0.2;
+const shootingCooldown = 500; // in milliseconds
+
+let player = {
+  x: canvas.width / 2,
+  y: canvas.height / 2,
+  direction: "up", // initial direction
+  lastShotTime: 0,
+};
+
+let bullets = [];
+let enemies = [];
+
+function reset()
+{
+  score = 0;
+  setScore(score);
+  bullets = [];
+  enemies = [];
+}
+
+function setScore(new_score){
+  score = new_score;
+  document.getElementsByClassName("score")[0].innerHTML = `Points: ${score}!`;
+}
+
+function drawPlayer() {
+  ctx.fillStyle = "blue";
+  ctx.fillRect(player.x - playerSize / 2, player.y - playerSize / 2, playerSize, playerSize);
+}
+
+function drawBullet(bullet) {
+  ctx.fillStyle = "red";
+  ctx.fillRect(bullet.x - 2, bullet.y - 2, 4, 4);
+}
+
+function drawEnemy(enemy) {
+  ctx.fillStyle = "gray";
+  ctx.fillRect(enemy.x - enemySize / 2, enemy.y - enemySize / 2, enemySize, enemySize);
+}
+
+function calculateDistance(x1, y1, x2, y2) {
+    return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+}
+
+function angle2FOV(angle)
+{
+  // Get viewport width
+  var viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+  // Get viewport height
+  var viewportHeight = (window.innerHeight || document.documentElement.clientHeight);
+
+  const top_left_angle    = Math.atan2(player.y - 0, player.x - 0)                          * 180/Math.PI + 180;
+  const top_right_angle     = Math.atan2(player.y - 0, player.x - viewportWidth)              * 180/Math.PI + 180;
+  const bottom_left_angle = Math.atan2(player.y - viewportHeight, player.x - 0)             * 180/Math.PI + 180;
+  const bottom_right_angle  = Math.atan2(player.y - viewportHeight, player.x - viewportWidth) * 180/Math.PI + 180;
+  
+  console.log(angle,top_left_angle,top_right_angle,bottom_right_angle,bottom_left_angle)
+  if(bottom_left_angle < angle && angle < top_left_angle)
+  {
+    return "left";
+  }
+  
+  if(top_left_angle < angle && angle < top_right_angle)
+  {
+    return "up";
+  }
+  
+  if(top_right_angle < angle && angle < 360)
+  {
+    return "right";
+  }
+
+  if(0 <= angle && angle < bottom_right_angle)
+  {
+    return "right";
+  }
+  
+  if(bottom_right_angle < angle && angle < bottom_left_angle)
+  {
+    return "down";
+  }
+}
+
+function shotClosestEnemy()
+{
+  var closet_enemy = null;
+  var dist = 1000;
+  enemies.forEach((enemy) => {
+    new_dist = calculateDistance(player.x,player.y,enemy.x,enemy.y);
+    const angle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
+    enemy_dir = angle2FOV(angle*180/Math.PI + 180);
+    
+    if(new_dist < dist && enemy_dir == player.direction)
+    {
+      dist = new_dist;
+      closet_enemy = enemy;
+    }
+  });
+  
+  // Shoot bullets
+  if(bullets.length < 20 && closet_enemy != null)
+  {
+    const currentTime = Date.now();
+    if (currentTime - player.lastShotTime > shootingCooldown) {
+      bullets.push({ x: player.x, y: player.y, direction_x: (player.x - closet_enemy.x)/100 * bulletSpeed, direction_y: (player.y - closet_enemy.y)/100 * bulletSpeed});
+      player.lastShotTime = currentTime;
+    } 
+  }    
+}
+
+function checkPlayersDeath()
+{
+  enemies.forEach((enemy) =>{
+      if(calculateDistance(player.x,player.y,enemy.x,enemy.y) < 1)
+      {
+        reset();
+      }
+  });
+}
+
+function updateFOV(){
+  const triangles = [...document.getElementsByClassName("triangle")];
+  triangles.forEach((triangle) => {
+    if(triangle.id == player.direction)
+    {
+      // console.log(triangle.id);
+      if(triangle.id == "left")
+      {
+        triangle.style.borderColor = 'transparent transparent transparent #78afd44b';
+      }
+      else if(triangle.id == "right")
+      {
+        triangle.style.borderColor = 'transparent #78afd44b transparent transparent';
+      }
+      else if(triangle.id == "up")
+      {
+        triangle.style.borderColor = '#78afd44b transparent transparent transparent';
+      }
+      else if(triangle.id == "down")
+      {
+        triangle.style.borderColor = 'transparent transparent #78afd44b transparent';
+      }
+    }
+    else
+    {
+      triangle.style.borderColor = 'transparent transparent transparent transparent';
+    }
+  });
+}
+
+function update() {
+  // Move bullets
+  shotClosestEnemy();
+  updateFOV();
+  
+  bullets = bullets.filter(bullet => {
+    bullet.x -= bullet.direction_x;
+    bullet.y -= bullet.direction_y;
+    
+    return bullet.x > 0 && bullet.x < canvas.width && bullet.y > 0 && bullet.y < canvas.height;
+  });
+
+  // Move enemies towards the player
+  enemies.forEach(enemy => {
+    const angle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
+    enemy.x += Math.cos(angle) * enemySpeed;
+    enemy.y += Math.sin(angle) * enemySpeed;
+  });
+
+  // Check for collisions
+  bullets.forEach(bullet => {
+    enemies = enemies.filter(enemy => {
+      const distance = Math.sqrt((bullet.x - enemy.x) ** 2 + (bullet.y - enemy.y) ** 2);
+      if (distance > enemySize / 2) {
+        return true; // enemy survives
+      }
+      score += 1;
+      setScore(score);
+      return false; // enemy hit
+    });
+  });
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  drawPlayer();
+  bullets.forEach(drawBullet);
+  enemies.forEach(drawEnemy);
+}
+
+function gameLoop() {
+  if(calibrated)
+  {
+    checkPlayersDeath();
+    update();
+    draw();
+  }
+  requestAnimationFrame(gameLoop);
+}
+
+const cards = {"tile_1":"left","tile_2":"up","tile_3":"down", "tile_4" : "right"};
+function onTile(id, fix, blink){
+  player.direction = cards[id];
+};
+
+function onCalibration()
+{
+  console.log("calibrated!");
+  calibrated = true;
+}
+
+function spawnEnemy() {
+  if(enemies.length < 20)
+  {
+    const side = Math.floor(Math.random() * 4); // 0: left, 1: up, 2: right, 3: down
+    let x, y;
+    switch (side) {
+      case 0:
+        x = 0;
+        y = Math.random() * canvas.height;
+        break;
+      case 1:
+        x = Math.random() * canvas.width;
+        y = 0;
+        break;
+      case 2:
+        x = canvas.width;
+        y = Math.random() * canvas.height;
+        break;
+      case 3:
+        x = Math.random() * canvas.width;
+        y = canvas.height;
+        break;
+    }
+    enemies.push({ x, y });
+  }
+}
+
+setInterval(spawnEnemy, 1000);
+
+gameLoop();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+<script src="/eyeTiles.js"></script>
+<script>
+EyeTilesAPI(
+  API_KEY = "JtLM!H!LqvRR@%Jx@jPGqCP3e2#S4Vqg!Czq2R97SSYp*yxPn&r&&@aFGpZB", // not in use for now
+  cols_list = [1,2,1],
+  {
+    fix_point : 0.1,
+    freeze_radius : 500,
+    sightGrid : true,
+    onTile : onTile,
+    onCalibration : onCalibration
+  }
+);
+</script>
+</body>
+</html>

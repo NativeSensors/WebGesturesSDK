@@ -14,7 +14,7 @@ function createCalibrator(className, textContent) {
 const latchCalibrator = {};
 function checkCalibrator(class_name,check){
   if (!(class_name in latchCalibrator)){
-    latchCalibrator[class_name] = false;   
+    latchCalibrator[class_name] = false;
   }
 
   if(latchCalibrator[class_name]){
@@ -22,7 +22,7 @@ function checkCalibrator(class_name,check){
   }
   else if(check){
     latchCalibrator[class_name] = check;
-    return latchCalibrator[class_name];  
+    return latchCalibrator[class_name];
   }
 }
 
@@ -42,7 +42,7 @@ function create_instruction_box(name){
 
   const instruct_body = document.createElement("div");
   instruct_body.className = "instruct_body";
-  
+
   const instruction = document.createElement("div");
   instruction.className = "instruction";
   instruction.innerText = "Look there";
@@ -81,12 +81,12 @@ function remove_calibrator(name){
   elements = document.getElementsByClassName("instruct_body");
   if(elements.length > 0)
   {
-    elements[0].remove(); 
+    elements[0].remove();
   }
   elements = document.getElementsByClassName("calibration_background");
   if(elements.length > 0)
   {
-    elements[0].remove(); 
+    elements[0].remove();
   }
   elements = document.getElementsByClassName("calibration_background");
 
@@ -100,7 +100,7 @@ function calibrator(x,y,fix){
   if(calibration_counter >= calibration_sequence.length && calibration_sequence.length > 0){
     return true;
   }
-  
+
   var width = window.innerWidth || document.documentElement.clientWidth;
   var height = window.innerHeight || document.documentElement.clientHeight;
 
@@ -113,7 +113,7 @@ function calibrator(x,y,fix){
     console.log(x, width, side_horizontal);
     var side_horizontal = x > width/2; // 0 left, 1 right
     var side_vertical   = y > height/2;// 0 up,   1 down
-    
+
     if(side_horizontal){
       calibration_sequence.push("right");
       calibration_sequence.push("left");

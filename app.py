@@ -32,7 +32,7 @@ def index():
     else:
         return redirect('/vision/vision.html')
         # return render_template('main.html')
-    
+
 # Serve the HTML page with JavaScript for WebSocket communication
 @flask_app.route('/debug')
 def debug():
@@ -86,10 +86,10 @@ def vision(name):
 
 @flask_app.route('/styles.css')
 def styles():
-    
+
     user_agent = request.headers.get('User-Agent')
     user_agent = user_agent.lower()
-    
+
     logging.info(f'{datetime.now().strftime("%m:%d:%Y:%H:%M:%S")} emiting styles ti ua: {user_agent}')
     if "iphone" in user_agent:
         return send_from_directory(os.path.join(flask_app.root_path, 'static'),'mobile.styles.css')
@@ -100,10 +100,10 @@ def styles():
 
 @flask_app.route('/eyegestures.css')
 def eyegestures_styles():
-    
+
     user_agent = request.headers.get('User-Agent')
     user_agent = user_agent.lower()
-    
+
     logging.info(f'{datetime.now().strftime("%m:%d:%Y:%H:%M:%S")} emiting styles ti ua: {user_agent}')
     if "iphone" in user_agent:
         return send_from_directory(os.path.join(flask_app.root_path, 'static'),'eyegestures.mobile.styles.css')
@@ -114,10 +114,10 @@ def eyegestures_styles():
 
 @flask_app.route('/eyeTiles.css')
 def eyeTiles_styles():
-    
+
     user_agent = request.headers.get('User-Agent')
     user_agent = user_agent.lower()
-    
+
     logging.info(f'{datetime.now().strftime("%m:%d:%Y:%H:%M:%S")} emiting styles ti ua: {user_agent}')
     if "iphone" in user_agent:
         return send_from_directory(os.path.join(flask_app.root_path, 'static'),'eyeTiles.mobile.styles.css')

@@ -57,7 +57,7 @@ class Calibrator:
             self.calibrator[id]["left"] += 1
         else:
             self.calibrator[id]["left"] = 0
-        
+
         if width - margin <= x:
             self.calibrator[id]["right"] += 1
         else:
@@ -67,7 +67,7 @@ class Calibrator:
             self.calibrator[id]["up"] += 1
         else:
             self.calibrator[id]["up"] = 0
-        
+
         if height - margin <= y:
             self.calibrator[id]["down"] += 1
         else:
@@ -100,13 +100,13 @@ class Client:
         self.calibrator = Calibrator()
         self.gestures   = EyeGestures_v1(roi_width=80,roi_height=30)
         self.max_clients = 8 # each client takes from 0.012s to 0.015s to process
-  
+
     def number(self):
         return self.calibrator.getItemsNumber()
 
     def process(self,frame,id,display_width,display_height,thresh,radius,offset_x,offset_y):
         frame = cv2.flip(frame, 1)
-    
+
         self.calibrator.create(id,Monitor(display_width,display_height,0,0))
         calibration = self.calibrator.get(id)
         try:
@@ -122,13 +122,13 @@ class Client:
 
         except Exception as e:
             print(f"Exception caught: {e}")
-            event = None    
+            event = None
 
         if event is not None:
             self.calibrator.check(id,event.point)
-            return ((event.point[0], event.point[1]),event.fixation,event.blink)
+            return (event, cevent)
         else:
-            return (None,None,None)
+            return (None,None)
 
     def create(self,id):
         self.calibrator
@@ -213,20 +213,20 @@ clients2eid = dict()
 clients = []
 
 # @app.task
-def client_remove(request):   
+def client_remove(request):
     try:
         unique_id = sids_to_keys[request.sid]
         buckets.remove(unique_id)
     except Exception as e:
         print(f"Exception: {e}")
     pass
-    
+
 # Handle WebSocket connections
 # @app.task
 def client_create(clientData, request):
     sids_to_keys[request.sid] = clientData["unique_id"]
     pass
-    
+
 def client_stop_calibration(clientData, request):
     buckets.freeze(clientData["unique_id"])
     pass
@@ -239,10 +239,10 @@ def client_start_calibration(clientData, request):
 def client_process_data(data):
 
     logging.info(f'{datetime.now().strftime("%m:%d:%Y:%H:%M:%S")}: Received data: {data}')
-    
+
     unique_id = data["unique_id"]
     if not buckets.checkSpace(unique_id):
-        return 
+        return
 
     # Convert base64 image data to OpenCV2 matrix
     image_data = data['image'].split(',')[1]  # Remove data URI header
@@ -250,10 +250,10 @@ def client_process_data(data):
     frame = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
 
     logging.debug(f'{datetime.now().strftime("%m:%d:%Y:%H:%M:%S")} [{unique_id}]: processing frame of size {frame.shape}')
-    
+
     # Flip the frame horizontally
     client = buckets.get(unique_id)
-    point,fix,blink = client.process(frame,
+    event,cevent = client.process(frame,
                                      unique_id,
                                      data["width"],
                                      data["height"],
@@ -261,10 +261,10 @@ def client_process_data(data):
                                      data["radius"],
                                      data["offset_x"],
                                      data["offset_y"])
-    
+
     if point is None:
         return
 
-    payload = { "x" : int(point[0]),"y" : int(point[1]), "fix": fix, "blink" : int(blink), "timestamp": int(data["timestamp"])}
+    payload = { "x" : int(event.point[0]),"y" : int(event.point[1]), "fix": event.fix, "blink" : int(event.blink), "c_x": int(cevent.point[0]), "c_y": int(cevent.point[1]),  "timestamp": int(data["timestamp"])}
     print(payload)
     return payload
