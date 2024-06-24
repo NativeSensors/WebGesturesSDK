@@ -262,9 +262,10 @@ def client_process_data(data):
                                      data["offset_x"],
                                      data["offset_y"])
 
-    if point is None:
+    if event is None:
         return
 
-    payload = { "x" : int(event.point[0]),"y" : int(event.point[1]), "fix": event.fix, "blink" : int(event.blink), "c_x": int(cevent.point[0]), "c_y": int(cevent.point[1]),  "timestamp": int(data["timestamp"])}
+    print(dir(event))
+    payload = { "x" : int(event.point[0]),"y" : int(event.point[1]), "fix": event.fixation, "blink" : int(event.blink), "c_x": int(cevent.point[0]), "c_y": int(cevent.point[1]),  "timestamp": int(data["timestamp"])}
     print(payload)
     return payload

@@ -1,7 +1,7 @@
 
 const offset = {
-x : 0,
-y : 0
+    x : 0,
+    y : 0
 };
 
 function createCalibrator(className, textContent) {
@@ -11,35 +11,10 @@ function createCalibrator(className, textContent) {
     return calibrator;
 }
 
-function create_instruction_box(name){
-    const instruct_body = document.createElement("div");
-    instruct_body.className = "instruct_body";
-
-    const instruction = document.createElement("div");
-    instruction.className = "instruction";
-    instruction.innerText = "Look there";
-
-    const arrow = document.createElement("div");
-    arrow.className = "arrow arrow_"+`${name}`;
-    arrow.style.position = "fixed";
-    for(let i = 0 ; i < 3 ; i++){
-        arrow.appendChild(
-        document.createElement("span")
-        );
-    }
-
-    instruct_body.appendChild(instruction);
-    instruct_body.appendChild(arrow);
-
-    return instruct_body;
-}
-
 function display_calibrator(name){
     const element = createCalibrator("calibrator calibrator_"+`${name}`+" message-"+`${name}`,"Move cursor here");
-    const instruction = create_instruction_box(name);
     const background = document.createElement("div");
     background.className = "calibration_background";
-    document.body.appendChild(instruction);
     document.body.appendChild(element);
     document.body.appendChild(background);
 }
@@ -71,142 +46,118 @@ function createTransportCanvas(){
     return trasnportCanvas;
 }
 
-function createSocket()
+
+
+function EyeCanvasApi(API_KEY, thresh, radius, options = {})
 {
+    const {
+        display_width = document.body.clientWidth - 75,
+        display_height = document.body.clientHeight - 75,
+        onFrame = function(video){},
+        onCursor = function(x,y,fix,blink){},
+        onCalibration = function(){},
+        onWeakConnection = function(){},
+        calibration_layout = true,
+        calibration = true,
+        DEBUG = false
+    } = options;
+
+    // Create socket for cooms
     var eyeGesturesDomain = "{{domain}}";
     var addr = 'http://' + eyeGesturesDomain;
-    console.log("connecting to: " + addr)
-    return io.connect(addr);
-}
+    const socket =  io.connect(addr);
+    console.log("socket.id: ", socket.id);
 
-
-function EyeGestureApi(API_KEY, thresh, radius, options = {})
-{
-const {
-    display_width = document.body.clientWidth - 75,
-    display_height = document.body.clientHeight - 75,
-    onFrame = function(video){},
-    onCursor = function(x,y,fix,blink){},
-    onCalibration = function(){},
-    onWeakConnection = function(){},
-    calibration_layout = true,
-    calibration = true,
-    DEBUG = false
-} = options;
-
-var unique_id = "{{unique_id}}";  
-// Set attributes for the video element
-const video = createVideoElement();
-// Append the video element to the body or any other container
-document.body.appendChild(video);
-// Create transport view for changing video frame into sendable item
-const trasnportCanvas = createTransportCanvas();
-// Create socket for cooms
-var socket = createSocket();
-
-// Send the stream to the server (You need to implement the server-side logic separately)
-navigator.mediaDevices.getUserMedia({ video: true })
-.then(function (stream){
-    if(calibration)
-    {
-        enableCalibration();
-    }
-
-    startVideoPlayer(video,stream);
-
-    // start sending loop
-    const frameInterval = 1000 / 15; // Adjust the frame rate as needed
-    setInterval(loop,frameInterval);
-}).catch(function(error){
-    console.error('Error accessing the camera and microphone:', error);
-});
-
-/* ============================================= API INTERNALS ======================================================= */
-
-// Emit the '/api/clientData' event with data as soon as the client connects
-socket.on('/api/onConnect', function () {
-
-    console.log("/api/onConnect");
-    document.body.style.maxWidth  = document.body.clientWidth;
-    document.body.style.maxHeight = document.body.clientHeight;
-
-    const payload = {
-    "key" : API_KEY,
-    "width"  : display_width,
-    "height" : display_height,
-    "unique_id" : unique_id,
-    "thresh" : thresh,
-    "radius" : radius
-    };
-
-    socket.emit('/api/clientData', payload);
-});
-
-// Listen for 'cursor' events from the server
-var debounce_it = 0;
-const DEBOUNCE_LIM = 30;
-socket.on('/api/cursor', function (event) {
-
-    console.log("Data received to cursor");
-    if((Date.now() - event.timestamp) > 200) // 300ms is considered as too slow connection
-    {
-    onWeakConnection();
-    }
-
-    let x = Math.min(event.x, display_width);
-    let y = Math.min(event.y, display_height);
-    let c_x = Math.min(event.c_x, display_width);
-    let c_y = Math.min(event.c_y, display_height);
-
-    // console.log(left , right , top , bottom);
-    if(debounce_it > DEBOUNCE_LIM)
-    {
-        onCursor(x, y, event.fix, event.blink);
-    }
-    else{
-        debounce_it += 1;
-    }
-});
-
-function sendFrame(){
-    // Flip the image horizontally
-    trasnportContext = trasnportCanvas.getContext('2d');
-    if(DEBUG){
-        var image = new Image();
-        image.src = '/demo_pic/debug_face.jpg';
-        trasnportContext.drawImage(image, 0, 0, trasnportCanvas.width, trasnportCanvas.height);
-        onFrame(image); // for user to draw/display/image on the screen - we use hidden display
-
-    }
-    else{
-        trasnportContext.drawImage(video, 0, 0, trasnportCanvas.width, trasnportCanvas.height);
-        onFrame(video); // for user to draw/display/image on the screen - we use hidden display
-    }
-    const imageData = trasnportCanvas.toDataURL('image/jpeg', 0.8); // Convert frame to base64
-
-    socket.emit('/api/stream', {
-        "key" : API_KEY,
-        "unique_id" : unique_id,
-        "thresh"    : thresh,
-        "radius"    : radius,
-        "height"    : display_height,
-        "width"     : display_width,
-        "offset_x"  : offset.x,
-        "offset_y"  : offset.y,
-        "image"     : imageData ,
-        "timestamp" : Date.now()
+    socket.on("connect_error", (err) => {
+        console.log(`connect_error due to ${err.message}`);
     });
-}
 
-function loop()
-{
-    sendFrame();
-}
+    var unique_id = "{{unique_id}}";  
+    // Set attributes for the video element
+    const video = createVideoElement();
+    // Append the video element to the body or any other container
+    document.body.appendChild(video);
+    // Create transport view for changing video frame into sendable item
+    const trasnportCanvas = createTransportCanvas();
 
-function startVideoPlayer(video,stream)
-{
-    // Display the local video stream
-    video.srcObject = stream;
-    video.play();
-}
+    /* ============================================= API INTERNALS ======================================================= */
+
+
+    socket.on('connect', function()
+    {
+        console.log(`Connection established. socket.id: ${socket.id}`);        
+    });
+
+    // Emit the '/api/clientData' event with data as soon as the client connects
+    socket.on('/api/onConnect', function () {
+        console.log("/api/onConnect");
+    });
+
+    socket.on("disconnect", () => {
+        console.log(`disconnected: ${socket.id}`); // undefined
+    });
+
+    socket.on('cursor', (message) => {
+        console.log(`Message from server. socket.id: ${socket.id}`);
+    });
+
+    function sendFrame(){
+        console.log(`sending frame. Socket id: ${socket.id}`);
+        // Flip the image horizontally
+        trasnportContext = trasnportCanvas.getContext('2d');
+        if(DEBUG){
+            var image = new Image();
+            image.src = '/demo_pic/debug_face.jpg';
+            trasnportContext.drawImage(image, 0, 0, trasnportCanvas.width, trasnportCanvas.height);
+            onFrame(image); // for user to draw/display/image on the screen - we use hidden display
+
+        }
+        else{
+            trasnportContext.drawImage(video, 0, 0, trasnportCanvas.width, trasnportCanvas.height);
+            onFrame(video); // for user to draw/display/image on the screen - we use hidden display
+        }
+
+        const imageData = trasnportCanvas.toDataURL('image/jpeg', 0.8); // Convert frame to base64
+
+        socket.emit('/api_v2/stream', {
+            "key" : API_KEY,
+            "unique_id" : unique_id,
+            "thresh"    : thresh,
+            "radius"    : radius,
+            "height"    : display_height,
+            "width"     : display_width,
+            "offset_x"  : offset.x,
+            "offset_y"  : offset.y,
+            "image"     : imageData ,
+            "timestamp" : Date.now()
+        });
+    }
+
+    function loop()
+    {
+        socket.on('cursor', (message) => {
+            console.log(`Message from server 2: ${message}`);
+        });
+    
+        sendFrame();
+    }
+
+    function startVideoPlayer(video,stream)
+    {
+        // Display the local video stream
+        video.srcObject = stream;
+        video.play();
+    }
+
+    // Send the stream to the server (You need to implement the server-side logic separately)
+    navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function (stream){
+        startVideoPlayer(video,stream);
+
+        // start sending loop
+        const frameInterval = 1000; // Adjust the frame rate as needed
+        setInterval(loop,frameInterval);
+    }).catch(function(error){
+        console.error('Error accessing the camera and microphone:', error);
+    });
 };
