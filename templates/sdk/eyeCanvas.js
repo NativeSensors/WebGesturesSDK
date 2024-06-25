@@ -11,16 +11,18 @@ socket.on('connect', function()
     console.log(`Connection established. socket.id: ${socket.id}`);   
 });
 
-socket.on('cursor', (message) => {
+socket.on('rsp', (message) => {
     console.log(`Message from server. socket.id: ${socket.id}`);
 });
 
+var count_sent = 0;
 function sendFrame()
 {
-    console.log("sending message");
-    socket.emit('stream', {
+    console.log("sending message: "+count_sent);
+    socket.emit('msg', {
         "DUMMY" : "DATA"
     });
+    count_sent+=1;
 }
 
 function loop()
@@ -29,5 +31,5 @@ function loop()
 }
 
 frameInterval = 1000;
-// setInterval(loop,frameInterval);
+setInterval(loop,frameInterval);
 
