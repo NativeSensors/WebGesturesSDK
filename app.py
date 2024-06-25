@@ -5,11 +5,9 @@ import gevent
 import time
 
 flask_app = Flask(__name__)
-flask_app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(flask_app, cors_allowed_origins="*")
+socketio = SocketIO(flask_app)
 
 # Serve the HTML page with JavaScript for WebSocket communication
-
 
 @flask_app.route('/')
 def index():

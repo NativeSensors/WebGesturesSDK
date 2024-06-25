@@ -28,6 +28,6 @@ function loop()
 var frameInterval = 1000;
 setInterval(loop,frameInterval);
 
-socket.on('rsp', (message) => {
+socket.on('rsp', function(data){
     console.log(`Message from server. socket.id: ${socket.id}`);
 });
