@@ -8,14 +8,7 @@ const socket =  io.connect(addr);
 
 socket.on('connect', function()
 {
-    console.log(`Connection established. socket.id: ${socket.id}`);      
-    for(var i = 0 ;i < 10 ; i++)
-    {
-        console.log("sending message");
-        socket.emit('stream', {
-            "DUMMY" : "DATA"
-        });
-    };          
+    console.log(`Connection established. socket.id: ${socket.id}`);         
 });
 
 socket.on('cursor', (message) => {
@@ -29,8 +22,6 @@ function sendFrame(){
     socket.emit('stream', {
         "DUMMY" : "DATA"
     });
-
-
 }
 
 function loop()

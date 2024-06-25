@@ -1,6 +1,7 @@
 # flask_app.py
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
+import time
 
 flask_app = Flask(__name__)
 socketio = SocketIO(flask_app)
@@ -23,7 +24,8 @@ def on_connection():
 # Handle WebSocket connections
 @socketio.on('stream')
 def on_stream(clientData):
+    time.sleep(2)
     emit('cursor', {"DATA":"echo"})
     
 if __name__ == '__main__':
-    flask_app.run()
+    socketio.run(app=flask_app)
