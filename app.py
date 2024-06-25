@@ -3,6 +3,7 @@ from flask import Flask, redirect, render_template, request, send_from_directory
 from flask_cors import CORS
 # from celery import Celery
 from flask_socketio import SocketIO, emit
+from logging.config import dictConfig
 from datetime import datetime
 import threading  
 import logging
@@ -219,9 +220,8 @@ def handle_image_v2(clientData):
     print(f"trying to emit. Session id: {request.sid}")
     socketio.emit('cursor',{"some_msg": "msg"},room=request.sid)
     
-
 if __name__ == '__main__':
-    logging.basicConfig(filename='flask_app.log', encoding='utf-8', level=logging.DEBUG)
+    logging.basicConfig(filename='error.log',level=logging.DEBUG)
     flask_app.run(debug=True)
-    t1.join()
+    # t1.join()
     # socketio.run(app=flask_app,debug=True)

@@ -135,10 +135,6 @@ function EyeCanvasApi(API_KEY, thresh, radius, options = {})
 
     function loop()
     {
-        socket.on('cursor', (message) => {
-            console.log(`Message from server 2: ${message}`);
-        });
-    
         sendFrame();
     }
 
