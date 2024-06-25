@@ -3,105 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Page Title</title>
-
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DX69NVJNBX"></script>
-  <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-DX69NVJNBX');
-  </script>
- 
-  <link rel="stylesheet" href="eyegestures.css">
-  <style>
-    /* Your existing CSS styles here */    
-    body {
-      margin: 0;
-      overflow: hidden;
-      width: 100vw;
-      height: 100vh;
-      font-family: monospace;
-    }
-
-    canvas {
-      display: block;
-    }
-
-    .container
-    {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .triangle {
-      position: absolute;
-      width: 0;
-      height: 0;
-      border-style: solid;
-      z-index: -999;
-    }
-
-    #down {
-      border-width: 0 50vw 50vh 50vw;
-      border-color: transparent transparent #78afd44b transparent;
-      bottom: 0;
-      left: 0;
-    }
-
-    #up {
-      border-width: 50vh 50vw 0 50vw;
-      border-color: #78afd44b transparent transparent transparent;
-      top: 0;
-      left: 0;
-    }
-
-    #right {
-      border-width: 50vh 50vw 50vh 0vw;
-      border-color: transparent #78afd44b transparent transparent;
-      top: 0;
-      right: 0;
-    }
-
-    #left {
-      border-width: 50vh 0 50vh 50vw;
-      border-color: transparent transparent transparent #78afd44b;
-      top: 0;
-      left: 0;
-    }
-
-  </style>
+  <title>TEST</title>
 </head>
 <body>
 
-<div id="grid_container"></div>
-
-<div style="position: absolute; width: 100%; height: 100%;">
-  <div class="triangle" id="down"></div>
-  <div class="triangle" id="up"></div>
-  <div class="triangle" id="left"></div>
-  <div class="triangle" id="right"></div>
-</div>
-
-<div class="container" style="display: flex; justify-content: center; align-items: center; width: 100vw; flex-direction: column;">
-  <h3 class="score" style="font-size: 24px; top: 40px; position: relative; color: #00000099">Points: 0</h3>
-  <canvas id="gameCanvas" width="100%" height="100%" style="position: absolute; z-index: -100;">
-  </canvas>
-</div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
 <script src="/eyeCanvas.js"></script>
-<script>
-function onCursor(x, y, fix, blink){}
-EyeCanvasApi(
-    "API",
-    0.5, 
-    100
-);
-</script>
 </body>
 </html>
