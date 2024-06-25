@@ -218,7 +218,7 @@ def on_clientData(clientData):
 @socketio.on('/api_v2/stream')
 def handle_image_v2(clientData):
     print(f"trying to emit. Session id: {request.sid}")
-    socketio.emit('cursor',{"some_msg": "msg"},room=request.sid)
+    emit('cursor', {})
     
 if __name__ == '__main__':
     logging.basicConfig(filename='error.log',level=logging.DEBUG)
