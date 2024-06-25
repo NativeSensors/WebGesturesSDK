@@ -8,16 +8,15 @@ const socket =  io.connect(addr);
 
 socket.on('connect', function()
 {
-    console.log(`Connection established. socket.id: ${socket.id}`);         
+    console.log(`Connection established. socket.id: ${socket.id}`);   
 });
 
 socket.on('cursor', (message) => {
     console.log(`Message from server. socket.id: ${socket.id}`);
 });
 
-
-function sendFrame(){
-
+function sendFrame()
+{
     console.log("sending message");
     socket.emit('stream', {
         "DUMMY" : "DATA"
@@ -30,5 +29,5 @@ function loop()
 }
 
 frameInterval = 1000;
-setInterval(loop,frameInterval);
+// setInterval(loop,frameInterval);
 
