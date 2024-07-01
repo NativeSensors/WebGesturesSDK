@@ -32,20 +32,16 @@ def base64cv2(img):
     return frame
 
 # Handle WebSocket connections
-count = 0
 @socketio.on('msg_data')
 def on_stream(data):
-    global count
-    calibrate = count < 300
+    calibrate = data['calibrate']
     frame = base64cv2(data['image'])
-    print(f"count {count} {calibrate}")
     try:
         event, calibration = gestures.step(frame, calibrate, data['width'], data['height'])
         emit('rsp', {"x" : event.point[0], 
                     "y" : event.point[1],
                     "c_x" : calibration.point[0], 
                     "c_y" : calibration.point[1]})
-        count+=1
     except Exception as e:
         print(f"Caught expression: {str(e)}")
         emit('rsp', {"x" : 0, "y" : 0, "c_x" : 0, "c_y" : 0})
