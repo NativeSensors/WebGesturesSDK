@@ -2,12 +2,14 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 from eyeGestures.eyegestures import EyeGestures_v2
+from threading import Thread 
 import numpy as np
 import base64
 import cv2
 
 flask_app = Flask(__name__)
 socketio = SocketIO(flask_app)
+
 gestures = EyeGestures_v2()
 
 # Serve the HTML page with JavaScript for WebSocket communication
@@ -36,11 +38,12 @@ def base64cv2(img):
 def on_stream(data):
     calibrate = data['calibrate']
     frame = base64cv2(data['image'])
+
     try:
         event, calibration = gestures.step(frame, calibrate, data['width'], data['height'])
-        emit('rsp', {"x" : event.point[0], 
+        emit('rsp', {"x" : event.point[0],
                     "y" : event.point[1],
-                    "c_x" : calibration.point[0], 
+                    "c_x" : calibration.point[0],
                     "c_y" : calibration.point[1]})
     except Exception as e:
         print(f"Caught expression: {str(e)}")

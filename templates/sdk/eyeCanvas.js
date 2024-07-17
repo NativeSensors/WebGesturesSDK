@@ -47,8 +47,9 @@ navigator.mediaDevices.getUserMedia({ video: true })
 });
 
 var calibration_counter = 0;
-var calibration_points = 35;
+var calibration_points = 15;
 var calibration_point = {'x':0, 'y':0};
+var point = {'x':0, 'y':0};
 
 function calibrated(){
     return calibration_counter > calibration_points
@@ -64,13 +65,23 @@ function update_calibrate_point(x,y)
     }
 }
 
+function update_point(x,y)
+{
+    display_width  = document.body.clientWidth  - 100;
+    display_height = document.body.clientHeight - 100;
+
+    point.x = x < display_width? x : display_width;
+    point.y = y < display_height? y : display_height;
+    point.x = x > 0? x : 0;
+    point.y = y > 0? y : 0;
+}
 
 function sendFrame(){
     // Flip the image horizontally
     var trasnportContext = trasnportCanvas.getContext('2d');
     trasnportContext.drawImage(video, 0, 0, trasnportCanvas.width, trasnportCanvas.height);
     const imageData = trasnportCanvas.toDataURL('image/jpeg', 0.8); // Convert frame to base64
-    display_width = document.body.clientWidth   - 75,
+    display_width  = document.body.clientWidth  - 75,
     display_height = document.body.clientHeight - 75,
 
     socket.emit('msg_data', {
@@ -91,9 +102,10 @@ function startVideoPlayer(video,stream)
 }
 
 socket.on('rsp', (data) => {
-    cursor.style.left = `${data["x"]}px`;
-    cursor.style.top = `${data["y"]}px`;
     update_calibrate_point(data["c_x"],data["c_y"])
+    update_point(data["x"],data["y"])
+    cursor.style.left = `${point.x}px`;
+    cursor.style.top = `${point.y}px`;
     calib_cursor.style.left = `${calibration_point.x}px`;
     calib_cursor.style.top = `${calibration_point.y}px`;
     sendFrame();
