@@ -47,7 +47,7 @@ navigator.mediaDevices.getUserMedia({ video: true })
 });
 
 var calibration_counter = 0;
-var calibration_points = 35;
+var calibration_points = 15;
 var calibration_point = {'x':0, 'y':0};
 var point = {'x':0, 'y':0};
 

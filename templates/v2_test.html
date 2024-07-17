@@ -3,33 +3,165 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TEST</title>
+  <title>EyeTubeFieldTest</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <style>
-  #cursor {
-    position: fixed;
-    width : 50px;
-    height : 50px;
-    background: blue;
-    border-radius: 50%;
-    border: medium solid rgba(0, 0, 255, 0.5);
-    z-index: 1000; /* Set a high z-index value */
-  }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background-color: #f1f1f1;
+      border-bottom: 1px solid #ccc;
+    }
 
-  #calib_cursor {
-    position: fixed;
-    width : 50px;
-    height : 50px;
-    background: rgb(40, 126, 6);
-    border-radius: 50%;
-    border: medium solid rgba(60, 252, 2, 0.815);
-    z-index: 1000; /* Set a high z-index value */
-  }
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .search-bar {
+      flex-grow: 1;
+      margin: 0 20px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .main-video .video-thumbnail {
+      width: 100%;
+      height: 500px;
+      background-color: #000;
+      border-radius: 8px;
+    }
+
+    .sidebar-videos .video-thumbnail {
+      width: 100%;
+      height: 150px;
+      background-color: #000;
+      border-radius: 8px;
+      background-size: cover;
+      background-position: center center;
+    }
+
+    .video-title {
+      padding: 10px 0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    #cursor {
+      position: fixed;
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 0, 255, 0.342);
+      border-radius: 50%;
+      border: medium solid rgba(0, 0, 255, 0.171);
+      z-index: 1000;
+    }
+
+    #calib_cursor {
+      position: fixed;
+      width: 50px;
+      height: 50px;
+      background: rgba(40, 126, 6, 0.291);
+      border-radius: 50%;
+      border: medium solid rgba(60, 252, 2, 0.236);
+      z-index: 1000;
+    }
+
+    @media (max-width: 576px) {
+      .main-video .video-thumbnail {
+        height: 250px;
+      }
+    }
+
+    .highlight {
+      box-shadow: 0 0 15px rgba(255, 98, 0, 0.8);
+    }
   </style>
 </head>
 <body style="height: 100vh;">
+  <header>
+    <div class="logo">
+      <img src="static/demo_pic/icon.png" alt="EyeGestures Icon">
+      <h1>EyeTube</h1>
+    </div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search">
+    </div>
+  </header>
 
+  <div class="container-fluid" style="margin-top: 20px;">
+    <div class="row main-content">
+      <div class="col-lg-8 col-md-7 col-12 main-video">
+        <div class="video-thumbnail" style="background-image: url('static/demo_pic/background_magnet_demo.png');"></div>
+        <div class="video-title">Main Video</div>
+      </div>
+      <div class="col-lg-4 col-md-5 col-12 sidebar-videos">
+        <div class="video-item">
+          <div class="video-thumbnail" style="background-image: url('/static/demo_pic/rune1.png');"></div>
+          <div class="video-title">Sidebar Video Title 1</div>
+        </div>
+        <div class="video-item">
+          <div class="video-thumbnail" style="background-image: url('/static/demo_pic/rune2.png');"></div>
+          <div class="video-title">Sidebar Video Title 2</div>
+        </div>
+        <div class="video-item">
+          <div class="video-thumbnail" style="background-image: url('/static/demo_pic/rune3.png');"></div>
+          <div class="video-title">Sidebar Video Title 3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- 
+  <div id="cursor"></div>
+  <div id="calib_cursor"></div> -->
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+  <script src="/eyeCanvas.js"></script>
+  <script>
+    function checkOverlap(cursor, elements) {
+      const cursorRect = cursor.getBoundingClientRect();
+      elements.forEach(element => {
+        const elementRect = element.getBoundingClientRect();
+        if ((cursorRect.right > elementRect.left && cursorRect.right < elementRect.right &&
+             cursorRect.top < elementRect.bottom && cursorRect.top > elementRect.top
+              )) {
+          element.classList.add('highlight');
+        } else {
+          element.classList.remove('highlight');
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const cursor = document.getElementById('cursor');
+      const elementsToCheck = document.querySelectorAll('.video-thumbnail, .video-title');
+
+      setInterval(() => {
+        checkOverlap(cursor, elementsToCheck);
+      }, 100);
+    });
+  </script>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
-<script src="/eyeCanvas.js"></script>
 </html>
