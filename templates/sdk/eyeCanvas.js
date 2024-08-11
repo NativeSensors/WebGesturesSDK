@@ -1,11 +1,15 @@
 
 const cursor = document.createElement('div');
 cursor.setAttribute('id','cursor')
+cursor.style.zIndex = 2000;
 document.body.appendChild(cursor);
 
 const calib_cursor = document.createElement('div');
 calib_cursor.setAttribute('id','calib_cursor')
+calib_cursor.style.zIndex = 2000;
 document.body.appendChild(calib_cursor);
+
+let overlayCanvas = null;
 
 function createVideoElement(){
     let video = document.createElement("video");
@@ -18,6 +22,36 @@ function createVideoElement(){
     video.style.width = "auto";
     video.style.height = "auto";
     return video;
+}
+
+function createOverlayCanvas(){
+    // Send each frame to the server
+    let overlayCanvas = document.createElement('canvas');
+    // Style the canvas to cover the entire viewport
+    overlayCanvas.id = "overlayCanvas"
+    overlayCanvas.style.position = 'fixed';
+    overlayCanvas.style.top = 0;
+    overlayCanvas.style.left = 0;
+    overlayCanvas.style.width = '100%';
+    overlayCanvas.style.height = '100%';
+    overlayCanvas.style.zIndex = 1500;
+    
+    overlayCanvas.width = window.innerWidth;
+    overlayCanvas.height = window.innerHeight;
+    document.body.appendChild(overlayCanvas);
+
+    const ctx = overlayCanvas.getContext('2d');
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+    return overlayCanvas;
+}
+
+function disableOverlayCanvas(){
+    // Send each frame to the server
+    overlayCanvas.remove();
+    // const ctx = overlayCanvas.getContext('2d');
+    // ctx.fillStyle = 'rgba(0, 0, 0, 0.0)';
+    // ctx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 }
 
 function createTransportCanvas(){
@@ -78,6 +112,17 @@ function update_point(x,y)
 
 function sendFrame(){
     // Flip the image horizontally
+
+    if(!calibrated() && overlayCanvas == null)
+    {
+        overlayCanvas = createOverlayCanvas();
+    }
+    else if(calibrated() && overlayCanvas != null)
+    {
+        disableOverlayCanvas();
+        overlayCanvas == null;
+    }
+
     var trasnportContext = trasnportCanvas.getContext('2d');
     trasnportContext.drawImage(video, 0, 0, trasnportCanvas.width, trasnportCanvas.height);
     const imageData = trasnportCanvas.toDataURL('image/jpeg', 0.8); // Convert frame to base64
