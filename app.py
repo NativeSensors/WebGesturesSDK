@@ -4,6 +4,9 @@ from flask_socketio import SocketIO, emit
 from eyeGestures.eyegestures import EyeGestures_v2
 from threading import Thread 
 import numpy as np
+import hashlib
+import random
+import string
 import base64
 import cv2
 
@@ -11,7 +14,12 @@ flask_app = Flask(__name__)
 socketio = SocketIO(flask_app)
 
 gestures = EyeGestures_v2()
+calibMap = np.array([[0,0],[0.25,0.25],[0,0.5],[0.25,0.75],[0,1],
+[0.5,0],[0.5,0.25],[0.5,0.5],[0.5,0.75],[0.5,1],
+[1,0],[0.75,0.25],[1,0.5],[0.75,0.75],[1,1]])
 
+gestures.enableCNCalib()
+gestures.setClassicImpact(2)
 # Serve the HTML page with JavaScript for WebSocket communication
 
 @flask_app.route('/')
@@ -22,10 +30,16 @@ def index():
 @flask_app.route('/eyeCanvas.js')
 def eyecanvas():
     # unique_id = tasks.generater_ID()
+    #  Generate a random string of letters and digits
+    random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
+
+    # Generate a SHA-256 hash of the random string
+    random_hash = hashlib.sha256(random_string.encode()).hexdigest()
+    gestures.uploadCalibrationMap(calibMap,context=random_hash)
     return render_template(
         'sdk/eyeCanvas.js',
         domain=request.host,
-        unique_id="unique_id")
+        unique_id=random_hash)
 
 def base64cv2(img):
     image_data = img.split(',')[1]  # Remove data URI header
@@ -40,7 +54,7 @@ def on_stream(data):
     frame = base64cv2(data['image'])
 
     try:
-        event, calibration = gestures.step(frame, calibrate, data['width'], data['height'])
+        event, calibration = gestures.step(frame, calibrate, data['width'], data['height'],context=data['unique_id'])
         emit('rsp', {"x" : event.point[0],
                     "y" : event.point[1],
                     "c_x" : calibration.point[0],

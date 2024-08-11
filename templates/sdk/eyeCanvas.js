@@ -134,7 +134,8 @@ function sendFrame(){
         "width"     : display_width,
         "image"     : imageData ,
         "calibrate" : !calibrated(),
-        "timestamp" : Date.now()
+        "timestamp" : Date.now(),
+        "unique_id" : "{{ unique_id }}",
     });
 }
 
