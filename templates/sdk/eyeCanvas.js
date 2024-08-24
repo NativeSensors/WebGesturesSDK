@@ -54,6 +54,13 @@ function disableOverlayCanvas(){
     // ctx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 }
 
+function enableTransparentCursors(){
+    cursor.style.background = 'transparent';
+    cursor.style.border = 'transparent';
+    calib_cursor.style.background = 'transparent';
+    calib_cursor.style.border = 'transparent';
+}
+
 function createTransportCanvas(){
     // Send each frame to the server
     let trasnportCanvas = document.createElement('canvas');
@@ -81,7 +88,7 @@ navigator.mediaDevices.getUserMedia({ video: true })
 });
 
 var calibration_counter = 0;
-var calibration_points = 15;
+var calibration_points = 18;
 var calibration_point = {'x':0, 'y':0};
 var point = {'x':0, 'y':0};
 
@@ -119,6 +126,7 @@ function sendFrame(){
     }
     else if(calibrated() && overlayCanvas != null)
     {
+        // enableTransparentCursors();
         disableOverlayCanvas();
         overlayCanvas == null;
     }
