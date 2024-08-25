@@ -19,7 +19,7 @@ calibMap = np.array([[0,0],[0.25,0.25],[0,0.5],[0.25,0.75],[0,1],
         [1,0],[0.75,0.25],[1,0.5],[0.75,0.75],[1,1]])
 
 gestures.enableCNCalib()
-gestures.setClassicImpact(10)
+gestures.setClassicImpact(2)
 # Serve the HTML page with JavaScript for WebSocket communication
 
 @flask_app.route('/')

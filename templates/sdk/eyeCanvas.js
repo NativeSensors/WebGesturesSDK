@@ -54,6 +54,23 @@ function disableOverlayCanvas(){
     // ctx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 }
 
+// Store original cursor styles
+const originalCursorStyle = {
+    background: cursor.style.background,
+    border: cursor.style.border
+};
+
+const originalCalibCursorStyle = {
+    background: calib_cursor.style.background,
+    border: calib_cursor.style.border
+};
+
+
+function restoreOriginalCursors() {
+    cursor.style.background = originalCursorStyle.background;
+    cursor.style.border = originalCursorStyle.border;
+}
+
 function enableTransparentCursors(){
     cursor.style.background = 'transparent';
     cursor.style.border = 'transparent';
@@ -88,7 +105,7 @@ navigator.mediaDevices.getUserMedia({ video: true })
 });
 
 var calibration_counter = 0;
-var calibration_points = 18;
+var calibration_points = 30;
 var calibration_point = {'x':0, 'y':0};
 var point = {'x':0, 'y':0};
 
@@ -126,7 +143,7 @@ function sendFrame(){
     }
     else if(calibrated() && overlayCanvas != null)
     {
-        // enableTransparentCursors();
+        enableTransparentCursors();
         disableOverlayCanvas();
         overlayCanvas == null;
     }
