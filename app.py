@@ -20,12 +20,12 @@ calibMap = np.array([[0,0],[0.25,0.25],[0,0.5],[0.25,0.75],[0,1],
 
 gestures.enableCNCalib()
 gestures.setClassicImpact(2)
+gestures.setFixation(1.0)
 # Serve the HTML page with JavaScript for WebSocket communication
 
 @flask_app.route('/')
 def index():
     return render_template('v2_test.html')
-
 
 @flask_app.route('/eyeCanvas.js')
 def eyecanvas():

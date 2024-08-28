@@ -41,7 +41,7 @@ function createOverlayCanvas(){
     document.body.appendChild(overlayCanvas);
 
     const ctx = overlayCanvas.getContext('2d');
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillStyle = 'rgba(210,180,140, 0.9)';
     ctx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
     return overlayCanvas;
 }
@@ -180,5 +180,5 @@ socket.on('rsp', (data) => {
     calib_cursor.style.left = `${calibration_point.x}px`;
     calib_cursor.style.top = `${calibration_point.y}px`;
     sendFrame();
-}); 
+});
 

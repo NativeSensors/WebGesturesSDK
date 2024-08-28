@@ -1,0 +1,1 @@
+python.exe -m gunicorn -k gevent -w 1 app:flask_app
