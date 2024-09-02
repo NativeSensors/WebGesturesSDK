@@ -1,0 +1,15 @@
+.second_svg{
+    position: absolute;
+    width: 400px;
+    height: 200px;
+    filter: drop-shadow(600px 00px 200px #00c3ffce);
+    z-index: 10;
+}
+
+.first_svg{
+    position: absolute;
+    width: 400px;
+    height: 300px;
+    filter: drop-shadow(800px 00px 200px #8c00ffce);
+    z-index: 10;
+}

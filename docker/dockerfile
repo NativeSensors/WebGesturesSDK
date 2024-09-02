@@ -1,0 +1,25 @@
+FROM python:3.9-slim-buster
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0
+
+# Install Redis and start the server
+RUN apt-get install -y redis-server
+WORKDIR /app
+COPY src/ /app/
+COPY src/templates /app/templates
+COPY src/templates/sdk src/templates/sdk
+COPY src/static /app/static
+RUN pip install pyopenssl
+RUN pip install gunicorn
+RUN pip install gevent
+RUN pip install celery
+RUN pip install redis
+RUN pip install -r /app/requirements.txt
+EXPOSE 5000
+ENV FLASK_APP=app.py
+
+# CMD ["python","app.py"]
+CMD ["./startup.sh"]

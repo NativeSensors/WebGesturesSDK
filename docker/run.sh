@@ -1,0 +1,1 @@
+docker run -it -v $PWD/fake_certs:/app/certs -v $PWD/src/templates:/app/templates -p 192.168.18.33:5000:5000 eyegestures_server_v2
