@@ -2,8 +2,10 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 from eyeGestures.eyegestures import EyeGestures_v2
+from datetime import datetime
 from celery import Celery
 import numpy as np
+import logging
 import hashlib
 import random
 import string
@@ -11,8 +13,8 @@ import base64
 import cv2
 import tasks
 
-flask_app = Flask(__name__)
-socketio = SocketIO(flask_app)
+flask_app = Flask(__name__,static_folder='static', static_url_path='/v2_beta_testing/static')
+socketio = SocketIO(flask_app,path='/v2_beta_testing/socket.io')
 
 # Serve the HTML page with JavaScript for WebSocket communication
 
@@ -29,11 +31,11 @@ celery = Celery(
 )
 celery.conf.update(flask_app.config)
 
-@flask_app.route('/')
+@flask_app.route('/v2_beta_testing')
 def index():
     return render_template('v2_test.html')
 
-@flask_app.route('/eyeCanvas.js')
+@flask_app.route('/v2_beta_testing/eyeCanvas.js')
 def eyecanvas():
     # unique_id = tasks.generater_ID()
     #  Generate a random string of letters and digits
@@ -55,19 +57,21 @@ def base64cv2(img):
 
 # Handle WebSocket connections
 
-@socketio.on('on_connect')
+@socketio.on('on_connect', namespace='/v2_beta_testing/socket.io')
 def on_connect(data):
     tasks.client_create(
         clientData=data,
         request=request
     )
 
-@socketio.on('disconnect')
+@socketio.on('disconnect', namespace='/v2_beta_testing/socket.io')
 def disconnect():
     tasks.client_remove(request)
 
-@socketio.on('msg_data')
+@socketio.on('msg_data', namespace='/v2_beta_testing/socket.io')
 def on_stream(data):
+    logging.info(f'{datetime.now().strftime("%m:%d:%Y:%H:%M:%S")}: Received data: {data}')
+
     frame = base64cv2(data['image'])
     # frame = cv2.flip(frame, 1) # no flip works fine
     tasks.client_process_data(frame, data, request, emit, request.sid)

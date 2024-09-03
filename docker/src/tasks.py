@@ -48,7 +48,7 @@ def client_create(clientData, request):
 # Handle WebSocket connections
 @app.task
 def client_process_data(frame,data, request, emit, sid):    
-    # print(f'{datetime.now().strftime("%m:%d:%Y:%H:%M:%S")}: Received data: {data}')
+    logging.info(f'{datetime.now().strftime("%m:%d:%Y:%H:%M:%S")}: Processing data from {data["unique_id"]}')
 
     if not buckets.checkSpace(data["unique_id"]):
         return
@@ -73,5 +73,5 @@ def client_process_data(frame,data, request, emit, sid):
                 "c_y" : calibration.point[1]}
         emit('rsp',payload)
     except Exception as e:
-        print(f"Failed to process image: {e}")
-        emit('rsp', {"x" : 0, "y" : 0, "c_x" : 0, "c_y" : 0})
+        print(f"Failed to process image: {e}", namespace='/v2_beta_testing')
+        emit('rsp', {"x" : 0, "y" : 0, "c_x" : 0, "c_y" : 0}, namespace='/v2_beta_testing')

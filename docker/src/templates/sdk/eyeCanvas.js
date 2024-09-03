@@ -93,7 +93,7 @@ document.body.appendChild(video);
 // Create transport view for changing video frame into sendable item
 const trasnportCanvas = createTransportCanvas();
 
-const socket = io();
+const socket = io('/v2_beta_testing/socket.io', { path: '/v2_beta_testing/socket.io' });  // This should match the namespace
 
 navigator.mediaDevices.getUserMedia({ video: true })
 .then(function (stream){    
