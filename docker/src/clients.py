@@ -1,17 +1,20 @@
-from eyeGestures.eyegestures import EyeGestures_v2
+from eyeGestures.eyegestures import EyeGestures_v2, EyeGestures_v1
 import numpy as np
 
 class Client:
 
-    def __init__(self):
-        self.gestures = EyeGestures_v2()
-        self.calibMap = np.array([[0,0],[0.25,0.25],[0,0.5],[0.25,0.75],[0,1],
-                [0.5,0],[0.5,0.25],[0.5,0.5],[0.5,0.75],[0.5,1],
-                [1,0],[0.75,0.25],[1,0.5],[0.75,0.75],[1,1]])
+    def __init__(self,v1=False):
+        if not v1:
+            self.gestures = EyeGestures_v2()
+            self.calibMap = np.array([[0,0],[0.25,0.25],[0,0.5],[0.25,0.75],[0,1],
+                    [0.5,0],[0.5,0.25],[0.5,0.5],[0.5,0.75],[0.5,1],
+                    [1,0],[0.75,0.25],[1,0.5],[0.75,0.75],[1,1]])
 
-        self.gestures.enableCNCalib()
-        self.gestures.setClassicImpact(2)
-
+            self.gestures.enableCNCalib()
+            self.gestures.setClassicImpact(2)
+        else: 
+            self.gestures = EyeGestures_v1()
+            
         self.users = list()
         self.max_clients = 8 # each client takes from 0.012s to 0.015s to process
 

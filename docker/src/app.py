@@ -1,7 +1,6 @@
 # flask_app.py
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
-from eyeGestures.eyegestures import EyeGestures_v2
 from datetime import datetime
 from celery import Celery
 import numpy as np
@@ -43,7 +42,6 @@ def eyecanvas():
 
     # Generate a SHA-256 hash of the random string
     random_hash = hashlib.sha256(random_string.encode()).hexdigest()
-    # gestures.uploadCalibrationMap(calibMap,context=random_hash)
     return render_template(
         'sdk/eyeCanvas.js',
         domain=request.host,
