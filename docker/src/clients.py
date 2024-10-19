@@ -6,12 +6,13 @@ class Client:
     def __init__(self,v1=False):
         if not v1:
             self.gestures = EyeGestures_v2()
-            self.calibMap = np.array([[0,0],[0.25,0.25],[0,0.5],[0.25,0.75],[0,1],
-                    [0.5,0],[0.5,0.25],[0.5,0.5],[0.5,0.75],[0.5,1],
-                    [1,0],[0.75,0.25],[1,0.5],[0.75,0.75],[1,1]])
+            self.calibMap = np.array([[0,0],[0,1],[1,1],[1,0],[0.5,0.5],
+                    [0.5,0],[0.5,1],[1,0.5],[0,0.5]])
 
             self.gestures.enableCNCalib()
+            self.gestures.setFixation(1.0)
             self.gestures.setClassicImpact(2)
+            self.gestures.uploadCalibrationMap(self.calibMap)
         else: 
             self.gestures = EyeGestures_v1()
             
@@ -24,6 +25,8 @@ class Client:
     def process(self,frame,calibrate,data):
         if data['unique_id'] not in self.users:
             self.users.append(data['unique_id'])
+            self.gestures.uploadCalibrationMap(self.calibMap,context=data['unique_id'])
+
         event, calibration = self.gestures.step(frame, calibrate, data['width'], data['height'],context=data['unique_id'])
         return event, calibration
 

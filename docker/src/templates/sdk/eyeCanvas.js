@@ -105,7 +105,7 @@ navigator.mediaDevices.getUserMedia({ video: true })
 });
 
 var calibration_counter = 0;
-var calibration_points = 30;
+var calibration_points = 10;
 var calibration_point = {'x':0, 'y':0};
 var point = {'x':0, 'y':0};
 
@@ -184,8 +184,8 @@ socket.on('rsp', (data) => {
     update_point(data["x"],data["y"])
     cursor.style.left = `${point.x}px`;
     cursor.style.top = `${point.y}px`;
-    calib_cursor.style.left = `${calibration_point.x}px`;
-    calib_cursor.style.top = `${calibration_point.y}px`;
+    calib_cursor.style.left = `${calibration_point.x - 100}px`;
+    calib_cursor.style.top = `${calibration_point.y - 100}px`;
     sendFrame();
 }); 
 
