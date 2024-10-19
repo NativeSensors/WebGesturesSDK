@@ -6,8 +6,8 @@ class Client:
     def __init__(self,v1=False):
         if not v1:
             self.gestures = EyeGestures_v2()
-            self.calibMap = np.array([[0,0],[0,1],[1,1],[1,0],[0.5,0.5],
-                    [0.5,0],[0.5,1],[1,0.5],[0,0.5]])
+            self.calibMap = np.array([[0.1,0.1],[0.1,0.9],[0.9,0.9],[0.9,0.1],[0.5,0.5],
+                    [0.5,0.1],[0.5,0.9],[0.9,0.5],[0.1,0.5]])
 
             self.gestures.enableCNCalib()
             self.gestures.setFixation(1.0)
